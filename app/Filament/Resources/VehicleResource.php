@@ -66,8 +66,9 @@ class VehicleResource extends Resource
                 Forms\Components\TextInput::make('purchased_date')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('photo_path')
-                    ->maxLength(255),
+                Forms\Components\FileUpload::make('photo_path')
+                    ->image()
+                    ->directory('images/vehicles/main'),
                 Forms\Components\Textarea::make('note')
                     ->columnSpanFull(),
             ]);
