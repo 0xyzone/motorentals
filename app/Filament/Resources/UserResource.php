@@ -116,13 +116,10 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('username')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('personal_contact_number')
-                    ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('business_contact_number')
-                    ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('alt_contact_number')
-                    ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('google_map_location')
                     ->searchable(),

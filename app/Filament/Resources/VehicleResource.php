@@ -18,6 +18,7 @@ class VehicleResource extends Resource
     protected static ?string $model = Vehicle::class;
 
     protected static ?string $navigationGroup = 'Vehicle Management';
+    protected static ?int $navigationSort = 2;
 
     public static function getNavigationBadge(): ?string
     {
@@ -40,7 +41,8 @@ class VehicleResource extends Resource
                     ->preload(),
                 Forms\Components\TextInput::make('name')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->autocomplete(false),
                 Forms\Components\TextInput::make('brand')
                     ->required()
                     ->maxLength(255),

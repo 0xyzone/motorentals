@@ -17,6 +17,7 @@ class VehicleTypeResource extends Resource
 {
     protected static ?string $model = VehicleType::class;
     protected static ?string $navigationGroup = 'Vehicle Management';
+    protected static ?int $navigationSort = 1;
 
     public static function getNavigationBadge(): ?string
     {
