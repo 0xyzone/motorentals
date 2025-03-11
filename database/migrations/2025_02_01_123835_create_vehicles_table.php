@@ -21,8 +21,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('vehicle_type_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('vehicle_brand_id')->constrained()->cascadeOnDelete();
             $table->string('name');
-            $table->string('brand');
             $table->string('color');
             $table->date('make_year');
             $table->string('lot_no');
@@ -30,7 +30,7 @@ return new class extends Migration
             $table->string('chassis_no');
             $table->string('status')->nullable();
             $table->integer('purchased_price');
-            $table->integer('purchased_date');
+            $table->date('purchased_date');
             $table->string('photo_path')->nullable();
             $table->longText('note')->nullable();
             $table->timestamps();
@@ -42,6 +42,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('vehicles_types');
         Schema::dropIfExists('vehicles');
     }
 };

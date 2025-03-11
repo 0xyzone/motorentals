@@ -6,6 +6,7 @@ use Filament\Forms;
 use Filament\Tables;
 use App\Models\Vehicle;
 use Filament\Forms\Form;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,7 +20,7 @@ class VehicleResource extends Resource
     protected static ?string $model = Vehicle::class;
 
     protected static ?string $navigationGroup = 'Vehicle Management';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
 
     public static function getNavigationBadge(): ?string
     {
@@ -31,6 +32,7 @@ class VehicleResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('user_id')
+                    ->label('Owner')
                     ->relationship(
                         name: 'user',
                         titleAttribute: 'name',
@@ -47,16 +49,20 @@ class VehicleResource extends Resource
                     ->searchable()
                     ->preload(),
                 Forms\Components\TextInput::make('name')
+                    ->label('Vehicle Name')
                     ->required()
                     ->maxLength(255)
                     ->autocomplete(false),
-                Forms\Components\TextInput::make('brand')
+                Forms\Components\Select::make('vehicle_brand_id')
+                    ->relationship('vehicleBrand', 'name')
                     ->required()
-                    ->maxLength(255),
+                    ->searchable()
+                    ->preload(),
                 Forms\Components\TextInput::make('color')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\DatePicker::make('make_year')
+                    ->native(false)
                     ->required(),
                 Forms\Components\TextInput::make('lot_no')
                     ->required()
@@ -74,13 +80,35 @@ class VehicleResource extends Resource
                 Forms\Components\TextInput::make('purchased_price')
                     ->required()
                     ->numeric(),
-                Forms\Components\TextInput::make('purchased_date')
+                Forms\Components\DatePicker::make('purchased_date')
                     ->required()
-                    ->numeric(),
-                SpatieMediaLibraryFileUpload::make('photo_path')
-                    ->collection('vehile/images')
+                    ->native(false),
+                SpatieMediaLibraryFileUpload::make('photos')
+                    ->collection('vehicle/images')
                     ->image()
-                    ->multiple(),
+                    ->multiple()
+                    ->columnSpanFull()
+                    ->imagePreviewHeight(150)    // Set thumbnail height
+                    ->panelLayout('grid')       // grid | carousel | compact
+                    ->uploadButtonPosition('center')
+                    ->uploadProgressIndicatorPosition('left')
+                    ->reorderable()
+                    ->appendFiles()
+                    ->openable()
+                    ->responsiveImages()        // Enable responsive images
+                    ->imageResizeTargetWidth(1024)
+                    ->imageResizeTargetHeight(682)
+                    ->hint('Max 5MB per image | Supported formats: JPG, PNG')
+                    ->hintIcon('heroicon-o-information-circle')
+                    ->placeholder('Click or drag images to upload')
+                    ->acceptedFileTypes(['image/jpeg', 'image/png'])
+                    // Visual enhancements:
+                    ->placeholder('Drag & drop vehicle photos here or click to upload')
+                    ->loadingIndicatorPosition('right')
+                    ->acceptedFileTypes(['image/jpeg', 'image/png'])
+                    ->validationMessages([
+                        'acceptedFileTypes' => 'Only JPG and PNG images are allowed',
+                    ]),
                 Forms\Components\Textarea::make('note')
                     ->columnSpanFull(),
             ]);
@@ -119,8 +147,8 @@ class VehicleResource extends Resource
                 Tables\Columns\TextColumn::make('purchased_date')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('photo_path')
-                    ->searchable(),
+                SpatieMediaLibraryImageColumn::make('photos')
+                    ->collection('vehicle/images'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
