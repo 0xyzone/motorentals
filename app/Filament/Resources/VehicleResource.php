@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\VehicleResource\Pages;
-use App\Filament\Resources\VehicleResource\RelationManagers;
-use App\Models\Vehicle;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Vehicle;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\VehicleResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use App\Filament\Resources\VehicleResource\RelationManagers;
 
 class VehicleResource extends Resource
 {
@@ -30,7 +31,13 @@ class VehicleResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
+                    ->relationship(
+                        name: 'user',
+                        titleAttribute: 'name',
+                        modifyQueryUsing: fn(Builder $query) => $query->whereDoesntHave('roles', function ($subQuery) {
+                            $subQuery->where('name', 'customer');
+                        })
+                    )
                     ->required()
                     ->searchable()
                     ->preload(),
@@ -60,17 +67,20 @@ class VehicleResource extends Resource
                 Forms\Components\TextInput::make('chassis_no')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('status')
-                    ->maxLength(255),
+                Forms\Components\Toggle::make('status')
+                    ->default(false)
+                    ->inline(false)
+                    ->label('Active?'),
                 Forms\Components\TextInput::make('purchased_price')
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('purchased_date')
                     ->required()
                     ->numeric(),
-                Forms\Components\FileUpload::make('photo_path')
+                SpatieMediaLibraryFileUpload::make('photo_path')
+                    ->collection('vehile/images')
                     ->image()
-                    ->directory('images/vehicles/main'),
+                    ->multiple(),
                 Forms\Components\Textarea::make('note')
                     ->columnSpanFull(),
             ]);
