@@ -94,7 +94,7 @@ class UserResource extends Resource
                         ])
                         ->columnSpan(1),
                     Forms\Components\Textarea::make('note')
-                    ->label('Notes')
+                        ->label('Notes')
                         ->columnSpanFull()
                         ->autosize()
                         ->rows(8),
@@ -107,6 +107,7 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id'),
+                Tables\Columns\TextColumn::make('photo_path'),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('roles.name')
@@ -128,8 +129,6 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('insta_link')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tiktok_link')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('photo_path')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

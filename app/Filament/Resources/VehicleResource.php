@@ -148,6 +148,10 @@ class VehicleResource extends Resource
                     ->numeric()
                     ->sortable(),
                 SpatieMediaLibraryImageColumn::make('photos')
+                    ->simpleLightbox()
+                    ->circular()
+                    ->stacked()
+                    ->limitedRemainingText()
                     ->collection('vehicle/images'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
